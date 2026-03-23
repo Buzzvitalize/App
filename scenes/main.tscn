@@ -1,0 +1,391 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/main_ui.gd" id="1_ui"]
+[ext_resource type="Script" path="res://scripts/game_manager.gd" id="2_gm"]
+[ext_resource type="Script" path="res://scripts/save_manager.gd" id="3_sm"]
+[ext_resource type="Script" path="res://scripts/unit_manager.gd" id="4_um"]
+[ext_resource type="Script" path="res://scripts/enemy_manager.gd" id="5_em"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ui")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0784314, 0.133333, 0.247059, 1)
+
+[node name="GameManager" type="Node" parent="."]
+script = ExtResource("2_gm")
+
+[node name="SaveManager" type="Node" parent="GameManager"]
+script = ExtResource("3_sm")
+
+[node name="UnitManager" type="Node" parent="GameManager"]
+script = ExtResource("4_um")
+
+[node name="EnemyManager" type="Node" parent="GameManager"]
+script = ExtResource("5_em")
+
+[node name="SafeMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 18
+
+[node name="RootVBox" type="VBoxContainer" parent="SafeMargin"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 14
+
+[node name="TopHUD" type="PanelContainer" parent="SafeMargin/RootVBox"]
+custom_minimum_size = Vector2(0, 110)
+layout_mode = 2
+
+[node name="TopHUDMargin" type="MarginContainer" parent="SafeMargin/RootVBox/TopHUD"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 14
+
+[node name="HUDVBox" type="VBoxContainer" parent="SafeMargin/RootVBox/TopHUD/TopHUDMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CurrencyRow" type="HBoxContainer" parent="SafeMargin/RootVBox/TopHUD/TopHUDMargin/HUDVBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="CoinPanel" type="PanelContainer" parent="SafeMargin/RootVBox/TopHUD/TopHUDMargin/HUDVBox/CurrencyRow"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CoinRow" type="HBoxContainer" parent="SafeMargin/RootVBox/TopHUD/TopHUDMargin/HUDVBox/CurrencyRow/CoinPanel"]
+layout_mode = 2
+alignment = 1
+
+[node name="CoinIcon" type="Label" parent="SafeMargin/RootVBox/TopHUD/TopHUDMargin/HUDVBox/CurrencyRow/CoinPanel/CoinRow"]
+layout_mode = 2
+text = "🪙"
+
+[node name="CoinLabel" type="Label" parent="SafeMargin/RootVBox/TopHUD/TopHUDMargin/HUDVBox/CurrencyRow/CoinPanel/CoinRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0"
+
+[node name="GemPanel" type="PanelContainer" parent="SafeMargin/RootVBox/TopHUD/TopHUDMargin/HUDVBox/CurrencyRow"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GemRow" type="HBoxContainer" parent="SafeMargin/RootVBox/TopHUD/TopHUDMargin/HUDVBox/CurrencyRow/GemPanel"]
+layout_mode = 2
+alignment = 1
+
+[node name="GemIcon" type="Label" parent="SafeMargin/RootVBox/TopHUD/TopHUDMargin/HUDVBox/CurrencyRow/GemPanel/GemRow"]
+layout_mode = 2
+text = "💎"
+
+[node name="GemLabel" type="Label" parent="SafeMargin/RootVBox/TopHUD/TopHUDMargin/HUDVBox/CurrencyRow/GemPanel/GemRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "25"
+
+[node name="EnemyPanel" type="PanelContainer" parent="SafeMargin/RootVBox"]
+custom_minimum_size = Vector2(0, 500)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="EnemyMargin" type="MarginContainer" parent="SafeMargin/RootVBox/EnemyPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
+
+[node name="EnemyVBox" type="VBoxContainer" parent="SafeMargin/RootVBox/EnemyPanel/EnemyMargin"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="StageRow" type="HBoxContainer" parent="SafeMargin/RootVBox/EnemyPanel/EnemyMargin/EnemyVBox"]
+layout_mode = 2
+
+[node name="StageLabel" type="Label" parent="SafeMargin/RootVBox/EnemyPanel/EnemyMargin/EnemyVBox/StageRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "STAGE 01"
+
+[node name="WaveLabel" type="Label" parent="SafeMargin/RootVBox/EnemyPanel/EnemyMargin/EnemyVBox/StageRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Wave 1/10"
+
+[node name="EnemyNameLabel" type="Label" parent="SafeMargin/RootVBox/EnemyPanel/EnemyMargin/EnemyVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 1
+text = "Slime Boss"
+
+[node name="EnemyHealthBar" type="ProgressBar" parent="SafeMargin/RootVBox/EnemyPanel/EnemyMargin/EnemyVBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="StageProgressBar" type="ProgressBar" parent="SafeMargin/RootVBox/EnemyPanel/EnemyMargin/EnemyVBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+max_value = 100.0
+value = 0.0
+show_percentage = false
+
+[node name="BattleArena" type="PanelContainer" parent="SafeMargin/RootVBox/EnemyPanel/EnemyMargin/EnemyVBox"]
+custom_minimum_size = Vector2(0, 270)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ArenaLayer" type="Control" parent="SafeMargin/RootVBox/EnemyPanel/EnemyMargin/EnemyVBox/BattleArena"]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ArenaSky" type="ColorRect" parent="SafeMargin/RootVBox/EnemyPanel/EnemyMargin/EnemyVBox/BattleArena/ArenaLayer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.278431, 0.631373, 0.945098, 1)
+
+[node name="Ground" type="ColorRect" parent="SafeMargin/RootVBox/EnemyPanel/EnemyMargin/EnemyVBox/BattleArena/ArenaLayer"]
+layout_mode = 1
+anchor_top = 0.75
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.25098, 0.686275, 0.345098, 1)
+
+[node name="PlayerOne" type="ColorRect" parent="SafeMargin/RootVBox/EnemyPanel/EnemyMargin/EnemyVBox/BattleArena/ArenaLayer"]
+unique_name_in_owner = true
+offset_left = 70.0
+offset_top = 128.0
+offset_right = 150.0
+offset_bottom = 248.0
+color = Color(0.368627, 0.784314, 1, 1)
+
+[node name="PlayerTwo" type="ColorRect" parent="SafeMargin/RootVBox/EnemyPanel/EnemyMargin/EnemyVBox/BattleArena/ArenaLayer"]
+unique_name_in_owner = true
+offset_left = 155.0
+offset_top = 142.0
+offset_right = 215.0
+offset_bottom = 240.0
+color = Color(0.678431, 0.423529, 1, 1)
+
+[node name="EnemyActor" type="ColorRect" parent="SafeMargin/RootVBox/EnemyPanel/EnemyMargin/EnemyVBox/BattleArena/ArenaLayer"]
+unique_name_in_owner = true
+offset_left = 420.0
+offset_top = 102.0
+offset_right = 560.0
+offset_bottom = 260.0
+color = Color(1, 0.372549, 0.443137, 1)
+
+[node name="BattleTapButton" type="Button" parent="SafeMargin/RootVBox/EnemyPanel/EnemyMargin/EnemyVBox/BattleArena/ArenaLayer"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "TAP TO SMASH"
+flat = true
+
+[node name="FloatingDamageLabel" type="Label" parent="SafeMargin/RootVBox/EnemyPanel/EnemyMargin/EnemyVBox/BattleArena/ArenaLayer"]
+unique_name_in_owner = true
+offset_left = 300.0
+offset_top = 120.0
+offset_right = 449.0
+offset_bottom = 159.0
+text = "-18"
+visible = false
+
+[node name="StatusLabel" type="Label" parent="SafeMargin/RootVBox/EnemyPanel/EnemyMargin/EnemyVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Tap battlefield for bonus damage"
+horizontal_alignment = 1
+
+[node name="SkillPanel" type="PanelContainer" parent="SafeMargin/RootVBox"]
+custom_minimum_size = Vector2(0, 170)
+layout_mode = 2
+
+[node name="SkillMargin" type="MarginContainer" parent="SafeMargin/RootVBox/SkillPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="SkillVBox" type="VBoxContainer" parent="SafeMargin/RootVBox/SkillPanel/SkillMargin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="DpsLabel" type="Label" parent="SafeMargin/RootVBox/SkillPanel/SkillMargin/SkillVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "TEAM DPS 0.0"
+horizontal_alignment = 1
+
+[node name="SkillsRow" type="HBoxContainer" parent="SafeMargin/RootVBox/SkillPanel/SkillMargin/SkillVBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Skill1" type="Button" parent="SafeMargin/RootVBox/SkillPanel/SkillMargin/SkillVBox/SkillsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Meteor"
+
+[node name="Skill2" type="Button" parent="SafeMargin/RootVBox/SkillPanel/SkillMargin/SkillVBox/SkillsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Shield"
+
+[node name="Skill3" type="Button" parent="SafeMargin/RootVBox/SkillPanel/SkillMargin/SkillVBox/SkillsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Storm"
+
+[node name="AutoButton" type="Button" parent="SafeMargin/RootVBox/SkillPanel/SkillMargin/SkillVBox/SkillsRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "AUTO ON"
+
+[node name="Skill4" type="Button" parent="SafeMargin/RootVBox/SkillPanel/SkillMargin/SkillVBox"]
+layout_mode = 2
+text = "ULTIMATE BURST"
+
+[node name="BottomPanel" type="PanelContainer" parent="SafeMargin/RootVBox"]
+custom_minimum_size = Vector2(0, 360)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BottomMargin" type="MarginContainer" parent="SafeMargin/RootVBox/BottomPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="BottomVBox" type="VBoxContainer" parent="SafeMargin/RootVBox/BottomPanel/BottomMargin"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="BottomHeader" type="HBoxContainer" parent="SafeMargin/RootVBox/BottomPanel/BottomMargin/BottomVBox"]
+layout_mode = 2
+
+[node name="RosterLabel" type="Label" parent="SafeMargin/RootVBox/BottomPanel/BottomMargin/BottomVBox/BottomHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "UNIT BARRACKS"
+
+[node name="ChestButton" type="Button" parent="SafeMargin/RootVBox/BottomPanel/BottomMargin/BottomVBox/BottomHeader"]
+layout_mode = 2
+text = "Loot Chest"
+
+[node name="UnitGrid" type="GridContainer" parent="SafeMargin/RootVBox/BottomPanel/BottomMargin/BottomVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+columns = 2
+
+
+[node name="FooterRow" type="HBoxContainer" parent="SafeMargin/RootVBox/BottomPanel/BottomMargin/BottomVBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="QuestPanel" type="PanelContainer" parent="SafeMargin/RootVBox/BottomPanel/BottomMargin/BottomVBox/FooterRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="QuestLabel" type="Label" parent="SafeMargin/RootVBox/BottomPanel/BottomMargin/BottomVBox/FooterRow/QuestPanel"]
+layout_mode = 2
+text = "Daily Quest\nDefeat 20 monsters"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ForgePanel" type="PanelContainer" parent="SafeMargin/RootVBox/BottomPanel/BottomMargin/BottomVBox/FooterRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ForgeLabel" type="Label" parent="SafeMargin/RootVBox/BottomPanel/BottomMargin/BottomVBox/FooterRow/ForgePanel"]
+layout_mode = 2
+text = "Forge\nWeapon +12"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OfflinePopup" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.15
+anchor_top = 0.35
+anchor_right = 0.85
+anchor_bottom = 0.62
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="OfflineMargin" type="MarginContainer" parent="OfflinePopup"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="OfflineVBox" type="VBoxContainer" parent="OfflinePopup/OfflineMargin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="OfflineTitle" type="Label" parent="OfflinePopup/OfflineMargin/OfflineVBox"]
+layout_mode = 2
+text = "Offline Rewards"
+horizontal_alignment = 1
+
+[node name="OfflineLabel" type="Label" parent="OfflinePopup/OfflineMargin/OfflineVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Away for 0s\nCollected 0 bonus coins"
+horizontal_alignment = 1
+
+[node name="CloseOfflineButton" type="Button" parent="OfflinePopup/OfflineMargin/OfflineVBox"]
+layout_mode = 2
+text = "Collect"
+
+[connection signal="pressed" from="OfflinePopup/OfflineMargin/OfflineVBox/CloseOfflineButton" to="." method="_on_close_offline_pressed"]

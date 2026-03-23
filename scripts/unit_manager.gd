@@ -1,0 +1,45 @@
+extends Node
+class_name UnitManager
+
+signal units_changed(units: Array)
+
+var units := [
+	{"name": "Knight", "level": 1, "base_cost": 30, "dps": 4.0, "accent": Color("#5ec8ff")},
+	{"name": "Mage", "level": 1, "base_cost": 55, "dps": 6.5, "accent": Color("#ad6cff")},
+	{"name": "Archer", "level": 1, "base_cost": 45, "dps": 5.0, "accent": Color("#60e38e")},
+	{"name": "Guardian", "level": 0, "base_cost": 110, "dps": 12.0, "accent": Color("#ffc14d")}
+]
+
+func import_state(saved_units: Array) -> void:
+	if saved_units.size() == units.size():
+		for i in units.size():
+			units[i]["level"] = int(saved_units[i].get("level", units[i]["level"]))
+	emit_signal("units_changed", units)
+
+
+func export_state() -> Array:
+	var data: Array = []
+	for unit in units:
+		data.append({"name": unit["name"], "level": unit["level"]})
+	return data
+
+
+func get_total_dps() -> float:
+	var total := 0.0
+	for unit in units:
+		total += unit["level"] * unit["dps"]
+	return total
+
+
+func get_upgrade_cost(index: int) -> int:
+	var unit := units[index]
+	return int(unit["base_cost"] * pow(1.35, unit["level"]))
+
+
+func upgrade_unit(index: int, available_coins: int) -> Dictionary:
+	var cost := get_upgrade_cost(index)
+	if available_coins < cost:
+		return {"success": false, "reason": "Not enough coins."}
+	units[index]["level"] += 1
+	emit_signal("units_changed", units)
+	return {"success": true, "cost": cost, "unit": units[index]}
