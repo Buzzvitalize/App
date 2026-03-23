@@ -2,22 +2,26 @@
 
 A vertical Godot mobile prototype for Android with a visually busy idle-battler layout already assembled in-scene.
 
+## Folder Structure
+- `assets/placeholders/` - simple SVG placeholder art.
+- `assets/ui/` - project icon and UI art.
+- `scenes/` - main playable Godot scene.
+- `scripts/managers/` - gameplay, enemy, unit, and save managers.
+- `scripts/ui/` - screen-level UI controller.
+
 ## Features
 - Auto battle with tap bonus damage.
 - Enemy stages, waves, and rewards.
-- Multiple upgradeable units with DPS scaling.
+- Five upgradeable units with DPS scaling.
 - Offline rewards and save/load persistence.
 - UI-first mobile screen structure with framed panels, buttons, bars, and counters.
 - Android export preset scaffold.
 
-## Project Structure
-- `scenes/main.tscn` - Main playable scene and prebuilt UI layout.
-- `scripts/main_ui.gd` - HUD refresh, interaction wiring, and feedback animation.
-- `scripts/game_manager.gd` - Main gameplay loop, state aggregation, and save/load integration.
-- `scripts/enemy_manager.gd` - Enemy state, health, defeat rewards, and stage progression.
-- `scripts/unit_manager.gd` - Unit roster, DPS totals, and upgrade costs.
-- `scripts/save_manager.gd` - Persistence and offline reward calculation.
-- `export_presets.cfg` - Starter Android export configuration.
+## Main Scene Structure
+- Top HUD with coins, gems, stage, wave, and enemy health.
+- Large battle arena with placeholder heroes, enemy, floating damage, and tap overlay.
+- Middle skill bar with four skill buttons and AUTO toggle.
+- Bottom barracks area with multiple unit upgrade cards and extra framed utility panels.
 
 ## Run in Godot
 1. Open the project in **Godot 4.2+**.

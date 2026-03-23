@@ -22,7 +22,7 @@ func export_state() -> Dictionary:
 
 
 func spawn_enemy() -> void:
-	var titles := ["Slime Boss", "Horn Beetle", "Stone Golem", "Sky Bat", "Crystal Mimic"]
+	var titles := ["Slime Boss", "Horn Beetle", "Stone Golem", "Sky Bat", "Crystal Mimic", "Pumpkin Ogre"]
 	enemy_name = titles[(stage - 1) % titles.size()]
 	max_health = 60.0 + (stage - 1) * 22.0 + (wave - 1) * 12.0
 	current_health = max_health

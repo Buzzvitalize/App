@@ -11,6 +11,7 @@ var coins := 0
 var gems := 25
 var auto_mode := true
 var coin_rate := 1.0
+var battle_power := 0.0
 
 @onready var save_manager: SaveManager = $SaveManager
 @onready var unit_manager: UnitManager = $UnitManager
@@ -25,6 +26,7 @@ func _ready() -> void:
 	load_game()
 	if enemy_manager.current_health <= 0.0:
 		enemy_manager.spawn_enemy()
+	_update_coin_rate()
 	_emit_state()
 
 
@@ -35,8 +37,13 @@ func _process(delta: float) -> void:
 		enemy_manager.apply_damage(max(1.0, unit_manager.get_total_dps() * auto_attack_interval))
 
 
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		save_game()
+
+
 func tap_attack() -> void:
-	enemy_manager.apply_damage(tap_damage)
+	enemy_manager.apply_damage(tap_damage + battle_power * 0.15)
 
 
 func toggle_auto() -> void:
@@ -48,19 +55,20 @@ func upgrade_unit(index: int) -> Dictionary:
 	var result := unit_manager.upgrade_unit(index, coins)
 	if result.get("success", false):
 		coins -= int(result["cost"])
-		coin_rate = max(1.0, unit_manager.get_total_dps() * 0.25)
+		_update_coin_rate()
 		save_game()
 		_emit_state()
 	return result
 
 
 func get_state() -> Dictionary:
+	battle_power = unit_manager.get_total_dps()
 	return {
 		"coins": coins,
 		"gems": gems,
 		"auto_mode": auto_mode,
 		"coin_rate": coin_rate,
-		"dps": unit_manager.get_total_dps(),
+		"dps": battle_power,
 		"enemy": enemy_manager.get_enemy_state(),
 		"units": unit_manager.units
 	}
@@ -97,14 +105,20 @@ func load_game() -> void:
 func _on_enemy_defeated(reward: int) -> void:
 	coins += reward
 	gems += int(reward / 40)
-	coin_rate = max(1.0, unit_manager.get_total_dps() * 0.25)
+	_update_coin_rate()
 	save_game()
 	_emit_state()
 
 
 func _on_units_changed(_units: Array) -> void:
+	_update_coin_rate()
 	_emit_state()
 
 
-func _emit_state() -> void:
+func _update_coin_rate() -> void:
+	battle_power = unit_manager.get_total_dps()
+	coin_rate = max(1.0, battle_power * 0.25)
+
+
+func _emit_state(_payload := {}) -> void:
 	emit_signal("state_changed", get_state())

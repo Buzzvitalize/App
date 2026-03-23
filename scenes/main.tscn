@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3]
 
-[ext_resource type="Script" path="res://scripts/main_ui.gd" id="1_ui"]
-[ext_resource type="Script" path="res://scripts/game_manager.gd" id="2_gm"]
-[ext_resource type="Script" path="res://scripts/save_manager.gd" id="3_sm"]
-[ext_resource type="Script" path="res://scripts/unit_manager.gd" id="4_um"]
-[ext_resource type="Script" path="res://scripts/enemy_manager.gd" id="5_em"]
+[ext_resource type="Script" path="res://scripts/ui/ui_manager.gd" id="1_ui"]
+[ext_resource type="Script" path="res://scripts/managers/game_manager.gd" id="2_gm"]
+[ext_resource type="Script" path="res://scripts/managers/save_manager.gd" id="3_sm"]
+[ext_resource type="Script" path="res://scripts/managers/unit_manager.gd" id="4_um"]
+[ext_resource type="Script" path="res://scripts/managers/enemy_manager.gd" id="5_em"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -109,7 +109,7 @@ layout_mode = 2
 text = "25"
 
 [node name="EnemyPanel" type="PanelContainer" parent="SafeMargin/RootVBox"]
-custom_minimum_size = Vector2(0, 500)
+custom_minimum_size = Vector2(0, 520)
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -291,7 +291,7 @@ layout_mode = 2
 text = "ULTIMATE BURST"
 
 [node name="BottomPanel" type="PanelContainer" parent="SafeMargin/RootVBox"]
-custom_minimum_size = Vector2(0, 360)
+custom_minimum_size = Vector2(0, 440)
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -318,6 +318,14 @@ text = "UNIT BARRACKS"
 [node name="ChestButton" type="Button" parent="SafeMargin/RootVBox/BottomPanel/BottomMargin/BottomVBox/BottomHeader"]
 layout_mode = 2
 text = "Loot Chest"
+
+[node name="SquadSummary" type="PanelContainer" parent="SafeMargin/RootVBox/BottomPanel/BottomMargin/BottomVBox"]
+layout_mode = 2
+
+[node name="SquadSummaryLabel" type="Label" parent="SafeMargin/RootVBox/BottomPanel/BottomMargin/BottomVBox/SquadSummary"]
+layout_mode = 2
+text = "5 Unit Slots • Idle Income • Upgrade Priority"
+horizontal_alignment = 1
 
 [node name="UnitGrid" type="GridContainer" parent="SafeMargin/RootVBox/BottomPanel/BottomMargin/BottomVBox"]
 unique_name_in_owner = true

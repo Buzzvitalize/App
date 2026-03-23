@@ -1,4 +1,5 @@
 extends Control
+class_name UIManager
 
 @onready var game_manager: GameManager = $GameManager
 @onready var enemy_bar: ProgressBar = %EnemyHealthBar
@@ -47,7 +48,7 @@ func _build_unit_cards() -> void:
 	for i in game_manager.unit_manager.units.size():
 		var unit: Dictionary = game_manager.unit_manager.units[i]
 		var card := PanelContainer.new()
-		card.custom_minimum_size = Vector2(0, 168)
+		card.custom_minimum_size = Vector2(0, 176)
 		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var style := StyleBoxFlat.new()
 		style.bg_color = Color("#203a68")
@@ -70,7 +71,7 @@ func _build_unit_cards() -> void:
 		card.add_child(margin)
 
 		var vbox := VBoxContainer.new()
-		vbox.add_theme_constant_override("separation", 6)
+		vbox.add_theme_constant_override("separation", 5)
 		margin.add_child(vbox)
 
 		var header := HBoxContainer.new()
@@ -90,17 +91,23 @@ func _build_unit_cards() -> void:
 		name_label.add_theme_font_size_override("font_size", 22)
 		title_box.add_child(name_label)
 
+		var role_label := Label.new()
+		role_label.text = unit["role"]
+		title_box.add_child(role_label)
+
 		var level_label := Label.new()
 		level_label.text = "Lv. %d" % unit["level"]
-		title_box.add_child(level_label)
+		vbox.add_child(level_label)
 
 		var stats_label := Label.new()
-		stats_label.text = "DPS %0.1f" % (unit["dps"] * max(1, unit["level"]))
+		stats_label.text = game_manager.unit_manager.get_unit_power_text(i)
 		vbox.add_child(stats_label)
 
 		var upgrade_button := Button.new()
 		upgrade_button.text = "Upgrade"
-		upgrade_button.custom_minimum_size = Vector2(0, 44)
+		upgrade_button.custom_minimum_size = Vector2(0, 42)
+		upgrade_button.add_theme_stylebox_override("normal", _make_button_style(unit["accent"].darkened(0.3), Color("#f7f0a3")))
+		upgrade_button.add_theme_stylebox_override("hover", _make_button_style(unit["accent"], Color.WHITE))
 		upgrade_button.pressed.connect(_on_upgrade_pressed.bind(i))
 		vbox.add_child(upgrade_button)
 
@@ -134,7 +141,7 @@ func _refresh_ui(state: Dictionary) -> void:
 	for i in min(units.size(), _unit_cards.size()):
 		var unit: Dictionary = units[i]
 		_unit_cards[i]["level"].text = "Lv. %d" % unit["level"]
-		_unit_cards[i]["stats"].text = "DPS %0.1f" % (unit["dps"] * max(1, unit["level"]))
+		_unit_cards[i]["stats"].text = game_manager.unit_manager.get_unit_power_text(i)
 		_unit_cards[i]["cost"].text = "Cost %d" % game_manager.unit_manager.get_upgrade_cost(i)
 
 
@@ -157,6 +164,7 @@ func _on_battle_tap_button_pressed() -> void:
 
 func _play_damage_feedback() -> void:
 	floating_text.visible = true
+	floating_text.text = "-%d" % int(game_manager.tap_damage)
 	floating_text.modulate = Color(1, 1, 1, 1)
 	floating_text.position = Vector2(300, 120)
 	if _float_tween:

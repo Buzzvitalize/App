@@ -3,11 +3,13 @@ class_name UnitManager
 
 signal units_changed(units: Array)
 
+# Defines the roster shown in the bottom barracks area.
 var units := [
-	{"name": "Knight", "level": 1, "base_cost": 30, "dps": 4.0, "accent": Color("#5ec8ff")},
-	{"name": "Mage", "level": 1, "base_cost": 55, "dps": 6.5, "accent": Color("#ad6cff")},
-	{"name": "Archer", "level": 1, "base_cost": 45, "dps": 5.0, "accent": Color("#60e38e")},
-	{"name": "Guardian", "level": 0, "base_cost": 110, "dps": 12.0, "accent": Color("#ffc14d")}
+	{"name": "Knight", "level": 1, "base_cost": 30, "dps": 4.0, "accent": Color("#5ec8ff"), "role": "Frontline"},
+	{"name": "Mage", "level": 1, "base_cost": 55, "dps": 6.5, "accent": Color("#ad6cff"), "role": "AoE"},
+	{"name": "Archer", "level": 1, "base_cost": 45, "dps": 5.0, "accent": Color("#60e38e"), "role": "Rapid"},
+	{"name": "Guardian", "level": 0, "base_cost": 110, "dps": 12.0, "accent": Color("#ffc14d"), "role": "Tank"},
+	{"name": "Priest", "level": 0, "base_cost": 150, "dps": 15.5, "accent": Color("#ff7ab6"), "role": "Support"}
 ]
 
 func import_state(saved_units: Array) -> void:
@@ -34,6 +36,11 @@ func get_total_dps() -> float:
 func get_upgrade_cost(index: int) -> int:
 	var unit := units[index]
 	return int(unit["base_cost"] * pow(1.35, unit["level"]))
+
+
+func get_unit_power_text(index: int) -> String:
+	var unit := units[index]
+	return "%s • DPS %0.1f" % [unit["role"], unit["dps"] * max(1, unit["level"])]
 
 
 func upgrade_unit(index: int, available_coins: int) -> Dictionary:
