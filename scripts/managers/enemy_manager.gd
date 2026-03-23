@@ -4,12 +4,12 @@ class_name EnemyManager
 signal enemy_changed(enemy_data: Dictionary)
 signal enemy_defeated(reward: int)
 
-var stage := 1
-var wave := 1
-var max_wave := 10
-var enemy_name := "Slime Boss"
-var max_health := 70.0
-var current_health := 70.0
+var stage: int = 1
+var wave: int = 1
+var max_wave: int = 10
+var enemy_name: String = "Slime Boss"
+var max_health: float = 70.0
+var current_health: float = 70.0
 
 func import_state(data: Dictionary) -> void:
 	stage = int(data.get("stage", stage))
@@ -22,7 +22,7 @@ func export_state() -> Dictionary:
 
 
 func spawn_enemy() -> void:
-	var titles := ["Slime Boss", "Horn Beetle", "Stone Golem", "Sky Bat", "Crystal Mimic", "Pumpkin Ogre"]
+	var titles: Array[String] = ["Slime Boss", "Horn Beetle", "Stone Golem", "Sky Bat", "Crystal Mimic", "Pumpkin Ogre"]
 	enemy_name = titles[(stage - 1) % titles.size()]
 	max_health = 60.0 + (stage - 1) * 22.0 + (wave - 1) * 12.0
 	current_health = max_health
@@ -30,7 +30,7 @@ func spawn_enemy() -> void:
 
 
 func get_enemy_state() -> Dictionary:
-	return {
+	var state: Dictionary = {
 		"name": enemy_name,
 		"current_health": current_health,
 		"max_health": max_health,
@@ -38,12 +38,13 @@ func get_enemy_state() -> Dictionary:
 		"wave": wave,
 		"progress": float(wave - 1) / float(max_wave)
 	}
+	return state
 
 
 func apply_damage(amount: float) -> void:
 	current_health = max(current_health - amount, 0.0)
 	if current_health <= 0.0:
-		var reward := int(15 + stage * 6 + wave * 4)
+		var reward: int = int(15 + stage * 6 + wave * 4)
 		emit_signal("enemy_defeated", reward)
 		wave += 1
 		if wave > max_wave:

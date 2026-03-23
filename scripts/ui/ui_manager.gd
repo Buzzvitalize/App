@@ -22,7 +22,7 @@ class_name UIManager
 @onready var enemy_actor: ColorRect = %EnemyActor
 
 var _unit_cards: Array[Dictionary] = []
-var _float_tween: Tween
+var _float_tween: Tween = null
 
 func _ready() -> void:
 	_apply_mock_theme()
@@ -42,17 +42,17 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _build_unit_cards() -> void:
-	for child in unit_grid.get_children():
+	for child: Node in unit_grid.get_children():
 		child.queue_free()
 	_unit_cards.clear()
-	for i in game_manager.unit_manager.units.size():
+	for i: int in game_manager.unit_manager.units.size():
 		var unit: Dictionary = game_manager.unit_manager.units[i]
-		var card := PanelContainer.new()
+		var card: PanelContainer = PanelContainer.new()
 		card.custom_minimum_size = Vector2(0, 176)
 		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var style := StyleBoxFlat.new()
+		var style: StyleBoxFlat = StyleBoxFlat.new()
 		style.bg_color = Color("#203a68")
-		style.border_color = unit["accent"]
+		style.border_color = Color(unit["accent"])
 		style.border_width_left = 4
 		style.border_width_top = 4
 		style.border_width_right = 4
@@ -63,92 +63,94 @@ func _build_unit_cards() -> void:
 		style.corner_radius_bottom_left = 24
 		card.add_theme_stylebox_override("panel", style)
 
-		var margin := MarginContainer.new()
+		var margin: MarginContainer = MarginContainer.new()
 		margin.add_theme_constant_override("margin_left", 14)
 		margin.add_theme_constant_override("margin_right", 14)
 		margin.add_theme_constant_override("margin_top", 12)
 		margin.add_theme_constant_override("margin_bottom", 12)
 		card.add_child(margin)
 
-		var vbox := VBoxContainer.new()
+		var vbox: VBoxContainer = VBoxContainer.new()
 		vbox.add_theme_constant_override("separation", 5)
 		margin.add_child(vbox)
 
-		var header := HBoxContainer.new()
+		var header: HBoxContainer = HBoxContainer.new()
 		vbox.add_child(header)
 
-		var portrait := ColorRect.new()
+		var portrait: ColorRect = ColorRect.new()
 		portrait.custom_minimum_size = Vector2(54, 54)
-		portrait.color = unit["accent"]
+		portrait.color = Color(unit["accent"])
 		header.add_child(portrait)
 
-		var title_box := VBoxContainer.new()
+		var title_box: VBoxContainer = VBoxContainer.new()
 		title_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		header.add_child(title_box)
 
-		var name_label := Label.new()
-		name_label.text = unit["name"]
+		var name_label: Label = Label.new()
+		name_label.text = str(unit["name"])
 		name_label.add_theme_font_size_override("font_size", 22)
 		title_box.add_child(name_label)
 
-		var role_label := Label.new()
-		role_label.text = unit["role"]
+		var role_label: Label = Label.new()
+		role_label.text = str(unit["role"])
 		title_box.add_child(role_label)
 
-		var level_label := Label.new()
-		level_label.text = "Lv. %d" % unit["level"]
+		var level_label: Label = Label.new()
+		level_label.text = "Lv. %d" % int(unit["level"])
 		vbox.add_child(level_label)
 
-		var stats_label := Label.new()
+		var stats_label: Label = Label.new()
 		stats_label.text = game_manager.unit_manager.get_unit_power_text(i)
 		vbox.add_child(stats_label)
 
-		var upgrade_button := Button.new()
+		var upgrade_button: Button = Button.new()
 		upgrade_button.text = "Upgrade"
 		upgrade_button.custom_minimum_size = Vector2(0, 42)
-		upgrade_button.add_theme_stylebox_override("normal", _make_button_style(unit["accent"].darkened(0.3), Color("#f7f0a3")))
-		upgrade_button.add_theme_stylebox_override("hover", _make_button_style(unit["accent"], Color.WHITE))
+		upgrade_button.add_theme_stylebox_override("normal", _make_button_style(Color(unit["accent"]).darkened(0.3), Color("#f7f0a3")))
+		upgrade_button.add_theme_stylebox_override("hover", _make_button_style(Color(unit["accent"]), Color.WHITE))
 		upgrade_button.pressed.connect(_on_upgrade_pressed.bind(i))
 		vbox.add_child(upgrade_button)
 
-		var cost_label := Label.new()
+		var cost_label: Label = Label.new()
 		cost_label.text = "Cost %d" % game_manager.unit_manager.get_upgrade_cost(i)
 		vbox.add_child(cost_label)
 
 		unit_grid.add_child(card)
-		_unit_cards.append({
+		var card_state: Dictionary = {
 			"level": level_label,
 			"stats": stats_label,
 			"cost": cost_label,
 			"button": upgrade_button
-		})
+		}
+		_unit_cards.append(card_state)
 
 
 func _refresh_ui(state: Dictionary) -> void:
-	var enemy := state["enemy"]
-	enemy_bar.max_value = enemy["max_health"]
-	enemy_bar.value = enemy["current_health"]
-	enemy_name_label.text = enemy["name"]
-	stage_label.text = "STAGE %02d" % enemy["stage"]
-	wave_label.text = "Wave %d/%d" % [enemy["wave"], game_manager.enemy_manager.max_wave]
-	progress_bar.value = enemy["progress"] * 100.0
+	var enemy: Dictionary = state["enemy"]
+	enemy_bar.max_value = float(enemy["max_health"])
+	enemy_bar.value = float(enemy["current_health"])
+	enemy_name_label.text = str(enemy["name"])
+	stage_label.text = "STAGE %02d" % int(enemy["stage"])
+	wave_label.text = "Wave %d/%d" % [int(enemy["wave"]), game_manager.enemy_manager.max_wave]
+	progress_bar.value = float(enemy["progress"]) * 100.0
 	coin_label.text = str(state["coins"])
 	gem_label.text = str(state["gems"])
-	dps_label.text = "TEAM DPS %0.1f" % state["dps"]
-	auto_button.text = "AUTO %s" % ("ON" if state["auto_mode"] else "OFF")
-	status_label.text = "Tap battlefield for bonus damage • Coin rate %0.1f/s" % state["coin_rate"]
+	dps_label.text = "TEAM DPS %0.1f" % float(state["dps"])
+	auto_button.text = "AUTO %s" % ("ON" if bool(state["auto_mode"]) else "OFF")
+	status_label.text = "Tap battlefield for bonus damage • Coin rate %0.1f/s" % float(state["coin_rate"])
 	var units: Array = state["units"]
-	for i in min(units.size(), _unit_cards.size()):
+	for i: int in min(units.size(), _unit_cards.size()):
 		var unit: Dictionary = units[i]
-		_unit_cards[i]["level"].text = "Lv. %d" % unit["level"]
-		_unit_cards[i]["stats"].text = game_manager.unit_manager.get_unit_power_text(i)
-		_unit_cards[i]["cost"].text = "Cost %d" % game_manager.unit_manager.get_upgrade_cost(i)
+		var card_state: Dictionary = _unit_cards[i]
+		(card_state["level"] as Label).text = "Lv. %d" % int(unit["level"])
+		(card_state["stats"] as Label).text = game_manager.unit_manager.get_unit_power_text(i)
+		(card_state["cost"] as Label).text = "Cost %d" % game_manager.unit_manager.get_upgrade_cost(i)
 
 
 func _on_upgrade_pressed(index: int) -> void:
-	var result := game_manager.upgrade_unit(index)
+	var result: Dictionary = game_manager.upgrade_unit(index)
 	if result.get("success", false):
-		status_label.text = "%s upgraded!" % result["unit"]["name"]
+		status_label.text = "%s upgraded!" % str(result["unit"]["name"])
 	else:
 		status_label.text = str(result.get("reason", "Upgrade failed"))
 
@@ -167,7 +169,7 @@ func _play_damage_feedback() -> void:
 	floating_text.text = "-%d" % int(game_manager.tap_damage)
 	floating_text.modulate = Color(1, 1, 1, 1)
 	floating_text.position = Vector2(300, 120)
-	if _float_tween:
+	if _float_tween != null:
 		_float_tween.kill()
 	_float_tween = create_tween()
 	_float_tween.tween_property(floating_text, "position", Vector2(300, 40), 0.45)
@@ -177,7 +179,7 @@ func _play_damage_feedback() -> void:
 func _show_offline_reward(reward: Dictionary) -> void:
 	if int(reward.get("elapsed", 0)) <= 5:
 		return
-	offline_label.text = "Away for %ds\nCollected %d bonus coins" % [reward["elapsed"], reward["coins"]]
+	offline_label.text = "Away for %ds\nCollected %d bonus coins" % [int(reward["elapsed"]), int(reward["coins"])]
 	offline_popup.visible = true
 
 
@@ -186,17 +188,18 @@ func _on_close_offline_pressed() -> void:
 
 
 func _apply_mock_theme() -> void:
-	for path in [
+	var panel_paths: Array[String] = [
 		"TopHUD", "EnemyPanel", "SkillPanel", "BottomPanel", "OfflinePopup",
 		"TopHUD/TopHUDMargin/HUDVBox/CurrencyRow/CoinPanel",
 		"TopHUD/TopHUDMargin/HUDVBox/CurrencyRow/GemPanel",
 		"EnemyPanel/EnemyMargin/EnemyVBox/BattleArena",
 		"BottomPanel/BottomMargin/BottomVBox/FooterRow/QuestPanel",
 		"BottomPanel/BottomMargin/BottomVBox/FooterRow/ForgePanel"
-	]:
-		var panel := get_node(path) as PanelContainer
+	]
+	for path: String in panel_paths:
+		var panel: PanelContainer = get_node(path) as PanelContainer
 		if panel:
-			var style := StyleBoxFlat.new()
+			var style: StyleBoxFlat = StyleBoxFlat.new()
 			style.bg_color = Color("#1d2f59")
 			style.border_width_left = 3
 			style.border_width_top = 3
@@ -209,8 +212,17 @@ func _apply_mock_theme() -> void:
 			style.corner_radius_bottom_right = 24
 			panel.add_theme_stylebox_override("panel", style)
 
-	for button_path in ["SkillPanel/SkillMargin/SkillVBox/SkillsRow/Skill1", "SkillPanel/SkillMargin/SkillVBox/SkillsRow/Skill2", "SkillPanel/SkillMargin/SkillVBox/SkillsRow/Skill3", "SkillPanel/SkillMargin/SkillVBox/SkillsRow/AutoButton", "SkillPanel/SkillMargin/SkillVBox/Skill4", "BottomPanel/BottomMargin/BottomVBox/BottomHeader/ChestButton", "OfflinePopup/OfflineMargin/OfflineVBox/CloseOfflineButton"]:
-		var button := get_node(button_path) as Button
+	var button_paths: Array[String] = [
+		"SkillPanel/SkillMargin/SkillVBox/SkillsRow/Skill1",
+		"SkillPanel/SkillMargin/SkillVBox/SkillsRow/Skill2",
+		"SkillPanel/SkillMargin/SkillVBox/SkillsRow/Skill3",
+		"SkillPanel/SkillMargin/SkillVBox/SkillsRow/AutoButton",
+		"SkillPanel/SkillMargin/SkillVBox/Skill4",
+		"BottomPanel/BottomMargin/BottomVBox/BottomHeader/ChestButton",
+		"OfflinePopup/OfflineMargin/OfflineVBox/CloseOfflineButton"
+	]
+	for button_path: String in button_paths:
+		var button: Button = get_node(button_path) as Button
 		if button:
 			button.add_theme_color_override("font_color", Color.WHITE)
 			button.add_theme_color_override("font_hover_color", Color.WHITE)
@@ -222,7 +234,7 @@ func _apply_mock_theme() -> void:
 
 
 func _make_button_style(fill: Color, border: Color) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
+	var style: StyleBoxFlat = StyleBoxFlat.new()
 	style.bg_color = fill
 	style.border_color = border
 	style.border_width_left = 3
@@ -237,7 +249,7 @@ func _make_button_style(fill: Color, border: Color) -> StyleBoxFlat:
 
 
 func _make_bar_fill(fill: Color) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
+	var style: StyleBoxFlat = StyleBoxFlat.new()
 	style.bg_color = fill
 	style.corner_radius_top_left = 14
 	style.corner_radius_top_right = 14
@@ -247,9 +259,13 @@ func _make_bar_fill(fill: Color) -> StyleBoxFlat:
 
 
 func _start_actor_bobs() -> void:
-	for node_data in [[player_one, 10.0, 0.55], [player_two, 12.0, 0.65], [enemy_actor, 14.0, 0.8]]:
-		var actor: CanvasItem = node_data[0]
-		var start_pos := actor.position
-		var tween := create_tween().set_loops()
-		tween.tween_property(actor, "position:y", start_pos.y - node_data[1], node_data[2])
-		tween.tween_property(actor, "position:y", start_pos.y, node_data[2])
+	_start_actor_bob(player_one, 10.0, 0.55)
+	_start_actor_bob(player_two, 12.0, 0.65)
+	_start_actor_bob(enemy_actor, 14.0, 0.8)
+
+
+func _start_actor_bob(actor: CanvasItem, distance: float, duration: float) -> void:
+	var start_pos: Vector2 = actor.position
+	var tween: Tween = create_tween().set_loops()
+	tween.tween_property(actor, "position:y", start_pos.y - distance, duration)
+	tween.tween_property(actor, "position:y", start_pos.y, duration)

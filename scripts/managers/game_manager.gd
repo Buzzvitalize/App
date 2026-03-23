@@ -4,20 +4,20 @@ class_name GameManager
 signal state_changed(game_state: Dictionary)
 signal offline_reward_ready(reward: Dictionary)
 
-@export var auto_attack_interval := 0.45
-@export var tap_damage := 18.0
+@export var auto_attack_interval: float = 0.45
+@export var tap_damage: float = 18.0
 
-var coins := 0
-var gems := 25
-var auto_mode := true
-var coin_rate := 1.0
-var battle_power := 0.0
+var coins: int = 0
+var gems: int = 25
+var auto_mode: bool = true
+var coin_rate: float = 1.0
+var battle_power: float = 0.0
 
 @onready var save_manager: SaveManager = $SaveManager
 @onready var unit_manager: UnitManager = $UnitManager
 @onready var enemy_manager: EnemyManager = $EnemyManager
 
-var _auto_timer := 0.0
+var _auto_timer: float = 0.0
 
 func _ready() -> void:
 	unit_manager.units_changed.connect(_on_units_changed)
@@ -52,7 +52,7 @@ func toggle_auto() -> void:
 
 
 func upgrade_unit(index: int) -> Dictionary:
-	var result := unit_manager.upgrade_unit(index, coins)
+	var result: Dictionary = unit_manager.upgrade_unit(index, coins)
 	if result.get("success", false):
 		coins -= int(result["cost"])
 		_update_coin_rate()
@@ -63,7 +63,7 @@ func upgrade_unit(index: int) -> Dictionary:
 
 func get_state() -> Dictionary:
 	battle_power = unit_manager.get_total_dps()
-	return {
+	var state: Dictionary = {
 		"coins": coins,
 		"gems": gems,
 		"auto_mode": auto_mode,
@@ -72,10 +72,11 @@ func get_state() -> Dictionary:
 		"enemy": enemy_manager.get_enemy_state(),
 		"units": unit_manager.units
 	}
+	return state
 
 
 func save_game() -> void:
-	var payload := {
+	var payload: Dictionary = {
 		"coins": coins,
 		"gems": gems,
 		"auto_mode": auto_mode,
@@ -87,7 +88,7 @@ func save_game() -> void:
 
 
 func load_game() -> void:
-	var data := save_manager.load_game()
+	var data: Dictionary = save_manager.load_game()
 	if data.is_empty():
 		enemy_manager.spawn_enemy()
 		return
@@ -97,7 +98,7 @@ func load_game() -> void:
 	coin_rate = float(data.get("coin_rate", coin_rate))
 	unit_manager.import_state(data.get("units", []))
 	enemy_manager.import_state(data.get("enemy", {}))
-	var reward := save_manager.calculate_offline_reward(data)
+	var reward: Dictionary = save_manager.calculate_offline_reward(data)
 	coins += int(reward.get("coins", 0))
 	emit_signal("offline_reward_ready", reward)
 
@@ -120,5 +121,5 @@ func _update_coin_rate() -> void:
 	coin_rate = max(1.0, battle_power * 0.25)
 
 
-func _emit_state(_payload := {}) -> void:
+func _emit_state(_payload: Dictionary = {}) -> void:
 	emit_signal("state_changed", get_state())
